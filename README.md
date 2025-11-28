@@ -1,9 +1,207 @@
-That's an important clarification! Updating the terminology ensures the documentation accurately reflects your specific hardware setup: a system driven by 2 actuators (likely for X-Y or X-Z motion) and a single load cell sensor (or force sensor).Here is the revised README.md with all references to "6-axis" and "gantry" replaced as requested.🚗 AI-Powered AC Vent Inspection ToolThis project demonstrates an Automated Quality Control (AQC) system using Machine Learning (ML) to inspect the mechanical "feel" and functionality of car AC vent louvers, relying solely on load cell sensor data and actuator position measurements.It is designed to replace subjective human tactile inspection with objective, quantifiable metrics.📌 Key FeaturesObjective Quality Control: Replaces subjective human assessment of "feel" with quantifiable force and torque metrics, collected by the load cell sensor.Actuator-Driven Testing: Precise mechanical interaction with the louver is achieved using the 2 actuator system for controlled movement.Hard Limit Enforcement: Enforces strict engineering limits on activation forces: $F_z \le 4.0 \text{ N}$ (Up/Down) and $F_{xy} \le 6.0 \text{ N}$ (Sideways).ML-Based Soft Limit Check: Uses a classifier (simulated Random Forest) to detect subtle anomalies like grittiness, binding, and excessive friction by analyzing the entire force-displacement curve shape.Streamlit Frontend: Provides a simple, interactive web interface for real-time results, visualizations, and testing various scenarios.⚙️ System Architecture (Simulation)The core logic simulates a production environment where data is collected from industrial hardware and processed at the edge:Data Acquisition: Simulated data streams from a load cell sensor and actuator position sensors ($P_x, P_y, P_z$) are collected at $1000 \text{ Hz}$.Actuator Control: The 2 actuator system executes precise, programmable movements to interact with the AC vent.Feature Engineering: Raw time-series data is converted into actionable features (e.g., peak forces, force variance, smoothness score).Inference: The data is checked against the hard force limits, and then fed to the pre-trained ML model for final quality classification (PASS/FAIL).Presentation: Results and diagnostic plots are displayed immediately via the Streamlit web application.🚀 Getting StartedFollow these steps to set up and run the interactive application locally.PrerequisitesYou need Python 3.8+ and Git installed on your system.1. Clone the RepositoryClone the project from GitHub and navigate into the directory:Bashgit clone https://github.com/YOUR_USERNAME/AI-Gantry-Inspection-Tool.git
-cd AI-Gantry-Inspection-Tool
-2. Set Up Virtual EnvironmentIt is highly recommended to use a virtual environment (venv) to isolate dependencies:macOS / Linux:Bashpython3 -m venv .venv
+AI-Powered AC Vent Inspection Tool
+
+This project showcases an Automated Quality Control (AQC) system that evaluates the mechanical “feel” and functional response of automotive AC vent louvers. The inspection relies entirely on load cell force data and actuator position measurements, replacing subjective manual tactile evaluations with objective, repeatable force-based metrics.
+
+📌 Key Features
+1. Objective Quality Control
+
+Replaces subjective human assessment with quantifiable and repeatable metrics captured from the load cell sensor.
+
+2. Actuator-Driven Testing
+
+A two-actuator motion system performs precise, programmable interactions with the vent louver to measure mechanical resistance.
+
+3. Hard Limit Enforcement
+
+Strict engineering force limits are applied:
+
+𝐹
+𝑧
+≤
+4.0
+ N
+F
+z
+	​
+
+≤4.0 N (vertical / up-down)
+
+𝐹
+𝑥
+𝑦
+≤
+6.0
+ N
+F
+xy
+	​
+
+≤6.0 N (side-to-side)
+
+If exceeded, the sample fails immediately.
+
+4. ML-Based Soft Limit Analysis
+
+A lightweight Random-Forest classifier (simulated in this version) identifies subtle anomalies such as:
+
+grittiness
+
+binding
+
+stick-slip motion
+
+excessive friction
+
+The classifier uses the force-displacement curve to detect patterns beyond human perception.
+
+5. Streamlit Frontend
+
+A clean interface for:
+
+real-time visualization
+
+interactive test configuration
+
+pass/fail result display
+
+force-position curve analysis
+
+⚙️ System Architecture (Simulated Environment)
+
+The system emulates a real production line workflow:
+
+1. Data Acquisition
+
+Simulated high-frequency force readings from a load cell sensor and actuator position sensors
+(
+𝑃
+𝑥
+,
+𝑃
+𝑦
+,
+𝑃
+𝑧
+P
+x
+	​
+
+,P
+y
+	​
+
+,P
+z
+	​
+
+) at 1000 Hz.
+
+2. Actuator Control
+
+A 2-actuator mechanism performs controlled motion profiles to interact with the AC vent.
+
+3. Feature Engineering
+
+Raw time-series data is transformed into features such as:
+
+peak forces
+
+force variability
+
+smoothness score
+
+gradient changes
+
+4. Inference Pipeline
+
+Data checked against hard mechanical limits.
+
+If safe, passed to the ML classifier for PASS/FAIL prediction.
+
+5. Presentation
+
+The Streamlit web app instantly displays:
+
+test verdict
+
+reason for PASS/FAIL
+
+force vs. displacement graphs
+
+🚀 Getting Started
+Prerequisites
+
+Python 3.8+
+
+Git installed
+
+1. Clone the Repository
+git clone https://github.com/YOUR_USERNAME/AI-Actuator-Inspection-Tool.git
+cd AI-Actuator-Inspection-Tool
+
+2. Create a Virtual Environment
+
+macOS / Linux
+
+python3 -m venv .venv
 source .venv/bin/activate
-Windows (Command Prompt):Bashpython -m venv .venv
+
+
+Windows
+
+python -m venv .venv
 .\.venv\Scripts\activate
-3. Install DependenciesInstall all required libraries using the provided requirements.txt file:Bashpip install -r requirements.txt
-4. Run the ApplicationExecute the Streamlit frontend script. This script will automatically create the necessary inspection_model.joblib dummy model on the first run.Bashstreamlit run app_frontend.py
-Your web browser should automatically open the AI-Powered AC Vent Inspection Console at http://localhost:8501.🧪 Usage and TestingOnce the app is running, use the controls on the left to simulate different testing scenarios:Test ModeDescriptionExpected AI OutcomePASS (Simulated 1.0N Max)Simulates a good louver with low force and smooth movement.PASSFAIL - Fz Breach (Simulated 5.0N Max)Simulates a stiff louver where vertical force exceeds the 4.0 N limit.FAIL (Hard Limit)FAIL - Fxy Breach (Simulated 7.0N Max)Simulates a sticky louver where sideways force exceeds the 6.0 N limit.FAIL (Hard Limit)The results panel will display the final decision, the reason for failure (Hard Limit or ML-detected Binding), and a plot of the Force vs. Position curve for engineering diagnostics.📝 File StructureFileDescriptionapp_frontend.pyThe main Streamlit application, containing all data acquisition, feature engineering, and prediction logic.requirements.txtLists all necessary Python packages (streamlit, numpy, pandas, scikit-learn, joblib).inspection_model.joblibThe serialized file containing the dummy trained ML model..gitignoreEnsures development files and large data are not pushed to GitHub.🤝 ContributingThis project is a functional proof-of-concept. Contributions are welcome! Potential future enhancements include:Replacing dummy data acquisition with live hardware API calls.Integrating a real dataset to train a production-grade ML model.Implementing Predictive Maintenance logic for the actuator system itself.📄 LicenseThis project is open-source and available under the MIT License.
+
+3. Install Dependencies
+pip install -r requirements.txt
+
+4. Run the Application
+
+This also auto-creates a dummy ML model (inspection_model.joblib) on first run.
+
+streamlit run app_frontend.py
+
+
+Open your browser at:
+
+http://localhost:8501
+
+🧪 Usage & Testing
+
+Choose scenarios from the sidebar:
+
+Test Mode	Description	Expected Outcome
+PASS (Simulated 1.0 N)	Smooth, low-force louver	PASS
+FAIL – Fz Breach (5 N)	Excess vertical force (>4 N)	FAIL – Hard Limit
+FAIL – Fxy Breach (7 N)	Excess side force (>6 N)	FAIL – Hard Limit
+FAIL – Binding	Rough or sticky movement detected by ML	FAIL – ML
+
+The result window displays:
+
+PASS/FAIL decision
+
+cause of failure
+
+force vs. displacement curve
+
+data summary
+
+📝 File Structure
+File	Description
+app_frontend.py	Main Streamlit app handling simulation, feature extraction, plots, and ML inference.
+requirements.txt	Python dependencies.
+inspection_model.joblib	Dummy ML model (auto-generated on first run).
+.gitignore	Excludes cache and temporary files.
+🤝 Contributing
+
+Contributions are welcome! Potential improvements:
+
+Integrate with real actuator and load-cell hardware APIs
+
+Replace dummy model with production-grade ML
+
+Add predictive maintenance analytics for actuator health
+
+📄 License
+
+This project is licensed under the MIT License.
