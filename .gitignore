@@ -1,0 +1,12 @@
+# Python environment files
+.venv/
+__pycache__/
+
+# Compiled files
+*.pyc
+*.o
+*.so
+
+# Data files (usually large and kept separate)
+*.csv
+*.xlsx
